@@ -25,7 +25,7 @@ const Signin = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button onClick={handleRegister}>Зарегистрироваться</button>
-      <p>Уже есть аккаунт? <Link to="/">Войдите</Link></p>
+      <p>Уже есть аккаунт? <Link to="/login">Войдите</Link></p>
     </div>
   );
 };
