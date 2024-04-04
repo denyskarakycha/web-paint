@@ -1,0 +1,78 @@
+form {
+  margin-top: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+}
+
+.text {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+label {
+  font: inder sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+.icon-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 20vh;
+}
+
+/* Mountain Icon */
+.icon-container .mountain {
+  font-size: 50px;
+  color: grey;
+}
+
+/* Globe Icon */
+.icon-container .globe {
+  font-size: 50px;
+  color: blue;
+}
+
+/* Bridge at Night Icon */
+.icon-container .bridge {
+  font-size: 50px;
+  color: darkblue;
+}
+
+/* Star Icons */
+.icon-container .star {
+  font-size: 50px;
+  color: yellow;
+}
+
+/* Rainbow Icon */
+.icon-container .rainbow {
+  font-size: 50px;
+}
