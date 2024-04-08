@@ -1,0 +1,44 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.block {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  margin-bottom: 20px;
+  width: 60%;
+  height: 400px;
+  display: flex; /* Встановлюємо flex контейнер */
+  justify-content: center; /* Центруємо по горизонталі */
+  align-items: center; /* Центруємо по вертикалі */
+}
+
+.images-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  /* grid-template-rows: 100px 100px 100px; */
+  row-gap: 40px; /* відстань між рядками */
+  column-gap: 40px; /* відстань між колонками */
+}
+
+.canvas {
+  width: 150px;
+  height: 150px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.canvas img {
+  max-width: 100%;
+  width: 100px;
+  display: block;
+  margin: 0 auto;
+}
