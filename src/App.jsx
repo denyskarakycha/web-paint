@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import Login from './components/LogIn/Login';
-import Signin from './components/SignIn/Signin';
+import Login from './components/Auth/LogIn/Login';
+import Signin from './components/Auth/SignIn/Signin';
 import Canvas from "./components/Canvas/Canvas";
 import Picture from "./components/Picture/Picture";
 import Gallery from "./components/Gallery/Gallery";

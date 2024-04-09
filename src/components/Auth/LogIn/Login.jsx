@@ -1,15 +1,40 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Button from "../Button/Button";
+import Button from "../../Button/Button";
 import "./Login.css";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../../firebase/config";
+import { collection, addDoc } from "firebase/firestore"; 
+
 
 const Login = () => {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [copyPassword, setCopyPassword] = useState("");
+  const [error, setError] = useState('');
 
-  const handleSignIn = () => {
-    // Реализация логики входа
-  };
+  const register = async (event) => {
+    event.preventDefault()
+    if (password !== copyPassword) {
+      setError('Password not match!');
+      return;
+    }
+    try {
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(user);
+      await addDoc(collection(db, 'users'), { username, email, images: []});
+      setError('');
+      setEmail('');
+      setPassword('');
+      setUsername('');
+      setCopyPassword('');
+    } catch (error) {
+      console.log(error);
+      setError('Something get wrong!');
+    }
+
+  }
 
   return (
     <div className="container">
@@ -23,12 +48,10 @@ const Login = () => {
       </div>
       <h1>Join us !</h1>
       <p>Register and draw whatever your heart desires !</p>
-      <form id="registrationForm">
+      <form id="registrationForm" onSubmit={register}>
         <label htmlFor="username">Your Name</label>
         <input
-          id="username"
-          name="username"
-          type="email"
+          type="text"
           placeholder="Name"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -37,8 +60,8 @@ const Login = () => {
         <input
           type="email"
           placeholder="Email addres"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <label>Password</label>
         <input
@@ -51,10 +74,10 @@ const Login = () => {
         <input
           type="password"
           placeholder="Confirm password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={copyPassword}
+          onChange={(e) => setCopyPassword(e.target.value)}
         />
-        <Button onClick={handleSignIn}>Log in</Button>
+        <Button>Log in</Button>
         <p className="text">
           <Link to="/register">Sign In !</Link>
         </p>
