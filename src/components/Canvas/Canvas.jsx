@@ -1,15 +1,16 @@
 import NavBar from "../NavBar/NavBar";
 import "./Canvas.css";
-import { useEffect} from "react";
+import { useEffect } from "react";
+import { collection, addDoc } from "firebase/firestore"; 
+import { db } from "../../firebase/config";
 
 const Canvas = () => {
- // const [clearCanvas, setClearCanvas] = useState('');
 
   useEffect(() => {
     const canvas = document.querySelector("canvas"),
       toolBtns = document.querySelectorAll(".tool"),
       fillColor = document.querySelector("#fill-color"),
-      sizeSlider = document.getElementById("size-slider"),
+      sizeSlider = document.querySelector("#size-slider"),
       colorBtns = document.querySelectorAll(".colors .option"),
       colorPicker = document.querySelector("#color-picker"),
       clearCanvas = document.querySelector(".clear-canvas"),
@@ -67,6 +68,7 @@ const Canvas = () => {
       ctx.putImageData(snapshot, 0, 0); 
       if (selectedTool === "brush" || selectedTool === "eraser") {
         ctx.strokeStyle = selectedTool === "eraser" ? "#fff" : selectedColor;
+        // add save data
         ctx.lineTo(e.offsetX, e.offsetY); 
         ctx.stroke(); 
       } else if (selectedTool === "rectangle") {
@@ -106,11 +108,8 @@ const Canvas = () => {
       setCanvasBackground();
     });
 
-    saveImg.addEventListener("click", () => {
-      const link = document.createElement("a"); 
-      link.download = `${Date.now()}.jpg`; 
-      link.href = canvas.toDataURL(); 
-      link.click(); 
+    saveImg.addEventListener("click", async () => {
+      await addDoc(collection(db, 'images'), { cordinats: '123', user_id: '123'});
     });
 
     canvas.addEventListener("mousedown", startDraw);
@@ -149,7 +148,7 @@ const Canvas = () => {
                     id="size-slider"
                     min="1"
                     max="30"
-                    value="5"
+                    defaultValue='5'
                   />
                 </li>
               </ul>
@@ -162,7 +161,7 @@ const Canvas = () => {
                 <li className="option"></li>
                 <li className="option"></li>
                 <li className="option">
-                  <input type="color" id="color-picker" value="#4A98F7" />
+                  <input type="color" id="color-picker" defaultValue="#4A98F7" />
                 </li>
               </ul>
             </div>
