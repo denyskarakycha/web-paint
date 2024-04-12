@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Button from "../../Button/Button";
 import "./Signin.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import {auth} from '../../../firebase/config'
+import { auth } from '../../../firebase/config'
 
 
 
@@ -18,7 +18,8 @@ const Signin = () => {
   const signIn = async (event) => {
     event.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const credentialsUser = await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem('userId', credentialsUser.user.uid);
       navigate('/gallery');
       setError('');
       setEmail('');

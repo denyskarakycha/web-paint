@@ -1,80 +1,64 @@
+/* eslint-disable no-unused-vars */
 import NavBar from "../NavBar/NavBar";
 import "./Canvas.css";
 import { useEffect } from "react";
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 const Canvas = () => {
-
   useEffect(() => {
-    const canvas = document.querySelector("canvas"),
-      toolBtns = document.querySelectorAll(".tool"),
-      fillColor = document.querySelector("#fill-color"),
-      sizeSlider = document.querySelector("#size-slider"),
-      colorBtns = document.querySelectorAll(".colors .option"),
-      colorPicker = document.querySelector("#color-picker"),
-      clearCanvas = document.querySelector(".clear-canvas"),
-      saveImg = document.querySelector(".save-img"),
-      ctx = canvas.getContext("2d");
-    let prevMouseX,
-      prevMouseY,
-      snapshot,
-      isDrawing = false,
-      selectedTool = "brush",
-      brushWidth = 5,
-      selectedColor = "#000";
+    const canvas = document.querySelector("canvas");
+    const toolBtns = document.querySelectorAll(".tool");
+    const sizeSlider = document.querySelector("#size-slider");
+    const colorBtns = document.querySelectorAll(".colors .option");
+    const colorPicker = document.querySelector("#color-picker");
+    const clearCanvas = document.querySelector(".clear-canvas");
+    const saveImg = document.querySelector(".save-img");
+    const ctx = canvas.getContext("2d");
+    let prevMouseX;
+    let prevMouseY;
+    let snapshot;
+    let isDrawing = false;
+    let selectedTool = "brush";
+    let brushWidth = 5;
+    let selectedColor = "#000";
+
+    const cordinats = [];
+
     const setCanvasBackground = () => {
       ctx.fillStyle = "#fff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = selectedColor; 
+      ctx.fillStyle = selectedColor;
     };
     window.addEventListener("load", () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
       setCanvasBackground();
     });
-    const drawRect = (e) => {
-      if (!fillColor.checked) {
-        return ctx.strokeRect(
-          e.offsetX,
-          e.offsetY,
-          prevMouseX - e.offsetX,
-          prevMouseY - e.offsetY
-        );
-      }
-      ctx.fillRect(
-        e.offsetX,
-        e.offsetY,
-        prevMouseX - e.offsetX,
-        prevMouseY - e.offsetY
-      );
-    };
-
 
     const startDraw = (e) => {
       isDrawing = true;
-      prevMouseX = e.offsetX; 
-      prevMouseY = e.offsetY; 
-      ctx.beginPath(); 
-      ctx.lineWidth = brushWidth; 
-      ctx.strokeStyle = selectedColor; 
-      ctx.fillStyle = selectedColor; 
- 
+      prevMouseX = e.offsetX;
+      prevMouseY = e.offsetY;
+      ctx.beginPath();
+      ctx.lineWidth = brushWidth;
+      ctx.strokeStyle = selectedColor;
+      ctx.fillStyle = selectedColor;
+
       snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
     };
 
     const drawing = (e) => {
-      if (!isDrawing) return; 
-      ctx.putImageData(snapshot, 0, 0); 
+      if (!isDrawing) return;
+      ctx.putImageData(snapshot, 0, 0);
       if (selectedTool === "brush" || selectedTool === "eraser") {
         ctx.strokeStyle = selectedTool === "eraser" ? "#fff" : selectedColor;
-        // add save data
-        ctx.lineTo(e.offsetX, e.offsetY); 
-        ctx.stroke(); 
-      } else if (selectedTool === "rectangle") {
-        drawRect(e);
+        cordinats.push({ x: e.offsetX, y: e.offsetY, color: selectedColor });
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
       }
     };
+    
     toolBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         document.querySelector(".options .active").classList.remove("active");
@@ -82,10 +66,12 @@ const Canvas = () => {
         selectedTool = btn.id;
       });
     });
+
     sizeSlider.addEventListener(
       "change",
       () => (brushWidth = sizeSlider.value)
-    ); 
+    );
+
     colorBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         document
@@ -104,12 +90,18 @@ const Canvas = () => {
     });
 
     clearCanvas.addEventListener("click", () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); 
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       setCanvasBackground();
     });
 
     saveImg.addEventListener("click", async () => {
-      await addDoc(collection(db, 'images'), { cordinats: '123', user_id: '123'});
+      const userId = localStorage.getItem("userId");
+      const userDocRef = await getDoc(collection(db, "users"));
+      await addDoc(collection(db, ""));
+      await addDoc(collection(db, "images"), {
+        cordinats: JSON.stringify(cordinats),
+        user_id: userId,
+      });
     });
 
     canvas.addEventListener("mousedown", startDraw);
@@ -148,7 +140,7 @@ const Canvas = () => {
                     id="size-slider"
                     min="1"
                     max="30"
-                    defaultValue='5'
+                    defaultValue="5"
                   />
                 </li>
               </ul>
@@ -161,7 +153,11 @@ const Canvas = () => {
                 <li className="option"></li>
                 <li className="option"></li>
                 <li className="option">
-                  <input type="color" id="color-picker" defaultValue="#4A98F7" />
+                  <input
+                    type="color"
+                    id="color-picker"
+                    defaultValue="#4A98F7"
+                  />
                 </li>
               </ul>
             </div>
