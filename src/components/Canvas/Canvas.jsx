@@ -30,6 +30,7 @@ const Canvas = () => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = selectedColor;
     };
+
     window.addEventListener("load", () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
@@ -38,6 +39,8 @@ const Canvas = () => {
 
     const startDraw = (e) => {
       isDrawing = true;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
       prevMouseX = e.offsetX;
       prevMouseY = e.offsetY;
       ctx.beginPath();
@@ -58,7 +61,7 @@ const Canvas = () => {
         ctx.stroke();
       }
     };
-    
+
     toolBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         document.querySelector(".options .active").classList.remove("active");
@@ -134,6 +137,9 @@ const Canvas = () => {
                   <i className="fi fi-ts-eraser"></i>
                   <span>Eraser</span>
                 </li>
+              </ul>
+              <label className="title">Brush Width</label>
+              <ul className="options">
                 <li className="option">
                   <input
                     type="range"

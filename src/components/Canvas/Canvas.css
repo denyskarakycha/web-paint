@@ -152,5 +152,6 @@
 }
 
 .title {
+  font-weight: bold;
   font-family: "Poppins", sans-serif;
 }
