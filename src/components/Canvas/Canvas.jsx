@@ -2,7 +2,17 @@
 import NavBar from "../NavBar/NavBar";
 import "./Canvas.css";
 import { useEffect } from "react";
-import { collection, addDoc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDoc,
+  doc,
+  updateDoc,
+  setDoc,
+  where,
+  query,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 const Canvas = () => {
@@ -99,12 +109,17 @@ const Canvas = () => {
 
     saveImg.addEventListener("click", async () => {
       const userId = localStorage.getItem("userId");
-      const userDocRef = await getDoc(collection(db, "users"));
-      await addDoc(collection(db, ""));
-      await addDoc(collection(db, "images"), {
-        cordinats: JSON.stringify(cordinats),
+
+      const imageRef = await addDoc(collection(db, "images"), {
+        cordinats: JSON.stringify(cordinats), // todo
         user_id: userId,
       });
+      const imageDoc = await getDoc(imageRef);
+      const usersDocRef = doc(db, "users", userId);
+      const usersCredentials = await getDoc(usersDocRef);
+      let userImagesDataId = usersCredentials.data().images;
+      userImagesDataId.push(imageDoc.id);
+      await updateDoc(usersDocRef, { images: userImagesDataId });
     });
 
     canvas.addEventListener("mousedown", startDraw);

@@ -4,7 +4,7 @@ import Button from "../../Button/Button";
 import "./Login.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../../firebase/config";
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc, doc, setDoc } from "firebase/firestore"; 
 
 
 const Login = () => {
@@ -22,8 +22,8 @@ const Login = () => {
     }
     try {
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(user);
-      await addDoc(collection(db, 'users'), { username, email, images: []});
+      const userRef = doc(db, 'users', user.uid);
+      await setDoc(userRef, { username, email, images: []});
       setError('');
       setEmail('');
       setPassword('');
