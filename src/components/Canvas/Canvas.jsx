@@ -47,6 +47,11 @@ const Canvas = () => {
       setCanvasBackground();
     });
 
+    const stopDrawing = () => {
+      isDrawing = false;
+      cordinats.push({ x: null, y: null, color: null });
+    }
+
     const startDraw = (e) => {
       isDrawing = true;
       ctx.lineCap = "round";
@@ -66,7 +71,7 @@ const Canvas = () => {
       ctx.putImageData(snapshot, 0, 0);
       if (selectedTool === "brush" || selectedTool === "eraser") {
         ctx.strokeStyle = selectedTool === "eraser" ? "#fff" : selectedColor;
-        cordinats.push({ x: e.offsetX, y: e.offsetY, color: selectedColor });
+        cordinats.push({ x: e.offsetX, y: e.offsetY, color: selectedColor, brushWidth: ctx.lineWidth});
         ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
       }
@@ -108,6 +113,7 @@ const Canvas = () => {
     });
 
     saveImg.addEventListener("click", async () => {
+
       const userId = localStorage.getItem("userId");
 
       const imageRef = await addDoc(collection(db, "images"), {
@@ -124,12 +130,12 @@ const Canvas = () => {
 
     canvas.addEventListener("mousedown", startDraw);
     canvas.addEventListener("mousemove", drawing);
-    canvas.addEventListener("mouseup", () => (isDrawing = false));
+    canvas.addEventListener("mouseup", stopDrawing);
 
     return () => {
       canvas.addEventListener("mousedown", startDraw);
       canvas.addEventListener("mousemove", drawing);
-      canvas.addEventListener("mouseup", () => (isDrawing = false));
+      canvas.addEventListener("mouseup", stopDrawing);
     };
   }, []);
 
