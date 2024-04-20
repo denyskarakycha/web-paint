@@ -13,31 +13,23 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { useEffect, useState } from "react";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import Pictures from "./Pictures/Pictures";
 
 const Gallery = () => {
   const [cordinats, setCordinats] = useState([]);
-  const [imagesDocs, setImagesDocs] = useState(null);
+  const [countUserImages, setCoutnUserImages] = useState(null);
+  const [isUploadedImages, setIsUploadedImages] = useState(false);
 
   const userId = localStorage.getItem("userId");
 
+  const handleUploadedImages = (value) => {
+    setIsUploadedImages(value);
+  };
+
   useEffect(() => {
-    const canvas = document.querySelector("canvas");
-    const ctx = canvas.getContext("2d");
-
-    let selectedColor = "#000";
-
-    window.addEventListener("load", () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-      setCanvasBackground();
-    });
-
-    const setCanvasBackground = () => {
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = selectedColor;
-    };
-
+    console.log(1);
     const uploadImages = async () => {
       try {
         const imagesCollectionRef = collection(db, "images");
@@ -47,60 +39,51 @@ const Gallery = () => {
         );
 
         const imageDocs = await getDocs(imagesQuery);
-        const [imagesCordinats] = imageDocs.docs.map((item) =>
+        const imagesCordinats = imageDocs.docs.map((item) =>
           JSON.parse(item.data().cordinats)
         );
 
-        for (let i = 0; i < imagesCordinats.length - 1; i++) {
-          const start = imagesCordinats[i];
-          const end = imagesCordinats[i + 1];
-
-          if ((!end.x && !end.y) || (!start.x && !start.y)) continue;
-
-          const scaledStartX = start.x * (canvas.width / 1250);
-          const scaledStartY = start.y * (canvas.height / 550);
-          const scaledEndX = end.x * (canvas.width / 1250);
-          const scaledEndY = end.y * (canvas.height / 550);
-
-          ctx.lineWidth = start.brushWidth
-          ctx.lineCap = "round";
-          ctx.lineJoin = "round";
-
-          ctx.beginPath();
-          ctx.moveTo(scaledStartX, scaledStartY);
-          ctx.lineTo(scaledEndX, scaledEndY);
-          ctx.strokeStyle = start.color;
-          ctx.stroke();
+        if (imagesCordinats.length === 0) {
+          setIsUploadedImages(true);
         }
-      } catch (e) {
-        console.log(e);
+
+        setCoutnUserImages(imagesCordinats.length);
+        setCordinats(imagesCordinats);
+      } catch (error) {
+        console.log(error);
       }
     };
 
     uploadImages();
-
-    return () => {};
-  }, [cordinats, imagesDocs, userId]);
+  }, [userId]);
 
   return (
     <>
       <NavBar></NavBar>
       <div className="gallery-container">
-        <div className="block">
-          <label className="content">title 1</label>
-          <canvas className="canvas"></canvas>
-          <div className="button-container">
-            <button>delete</button>
-          </div>
-        </div>
-        <div className="block">
-          <label className="content">title 2</label>
-          <canvas className="canvas"></canvas>
-          <div className="button-container">
-            <button>delete</button>
-          </div>
-        </div>
+        {countUserImages ? (
+          cordinats.map((image, index) => {
+            return (
+              <Pictures
+                key={index}
+                cordinats={image}
+                canvasId={index}
+                onUploadedImages={handleUploadedImages}
+              ></Pictures>
+            );
+          })
+        ) : (
+          <p>Not doc</p>
+        )}
       </div>
+      {!isUploadedImages && (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={open}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
     </>
   );
 };
