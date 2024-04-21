@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import NavBar from "../NavBar/NavBar";
 import "./Canvas.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   collection,
   addDoc,
@@ -14,8 +14,14 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
+import { useNavigate } from "react-router";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Canvas = () => {
+  const naigate = useNavigate();
+  const [state, setState] = useState(false);
+
   useEffect(() => {
     const canvas = document.querySelector("canvas");
     const toolBtns = document.querySelectorAll(".tool");
@@ -41,16 +47,14 @@ const Canvas = () => {
       ctx.fillStyle = selectedColor;
     };
 
-    window.addEventListener("load", () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-      setCanvasBackground();
-    });
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    setCanvasBackground();
 
     const stopDrawing = () => {
       isDrawing = false;
       cordinats.push({ x: null, y: null, color: null });
-    }
+    };
 
     const startDraw = (e) => {
       isDrawing = true;
@@ -71,7 +75,12 @@ const Canvas = () => {
       ctx.putImageData(snapshot, 0, 0);
       if (selectedTool === "brush" || selectedTool === "eraser") {
         ctx.strokeStyle = selectedTool === "eraser" ? "#fff" : selectedColor;
-        cordinats.push({ x: e.offsetX, y: e.offsetY, color: selectedColor, brushWidth: ctx.lineWidth});
+        cordinats.push({
+          x: e.offsetX,
+          y: e.offsetY,
+          color: selectedColor,
+          brushWidth: ctx.lineWidth,
+        });
         ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
       }
@@ -113,19 +122,30 @@ const Canvas = () => {
     });
 
     saveImg.addEventListener("click", async () => {
-
       const userId = localStorage.getItem("userId");
+      const imageTitle = localStorage.getItem("imageTitle");
 
-      const imageRef = await addDoc(collection(db, "images"), {
-        cordinats: JSON.stringify(cordinats), // todo
-        user_id: userId,
-      });
-      const imageDoc = await getDoc(imageRef);
-      const usersDocRef = doc(db, "users", userId);
-      const usersCredentials = await getDoc(usersDocRef);
-      let userImagesDataId = usersCredentials.data().images;
-      userImagesDataId.push(imageDoc.id);
-      await updateDoc(usersDocRef, { images: userImagesDataId });
+      try {
+        setState(true);
+        const imageRef = await addDoc(collection(db, "images"), {
+          title: imageTitle,
+          cordinats: JSON.stringify(cordinats),
+          user_id: userId,
+        });
+
+        localStorage.removeItem("imageTitle");
+
+        const imageDoc = await getDoc(imageRef);
+        const usersDocRef = doc(db, "users", userId);
+        const usersCredentials = await getDoc(usersDocRef);
+        let userImagesDataId = usersCredentials.data().images;
+        userImagesDataId.push(imageDoc.id);
+        await updateDoc(usersDocRef, { images: userImagesDataId });
+        setState(false);
+        naigate("/gallery");
+      } catch (error) {
+        console.log(error);
+      }
     });
 
     canvas.addEventListener("mousedown", startDraw);
@@ -141,7 +161,7 @@ const Canvas = () => {
 
   return (
     <>
-      <NavBar></NavBar>
+      <NavBar pathGallery={"/gallery"}></NavBar>
       <div className="canvas-body">
         <div className="canvas-container">
           <section className="tools-board">
@@ -198,6 +218,14 @@ const Canvas = () => {
           </section>
         </div>
       </div>
+      {state && (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={open}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
     </>
   );
 };

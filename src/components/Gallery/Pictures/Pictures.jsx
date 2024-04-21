@@ -1,16 +1,20 @@
 /* eslint-disable react/prop-types */
 import "../Gallery.css";
-import { useEffect, useState } from "react";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useEffect } from "react";
 
 const Pictures = (props) => {
-  const { cordinats, canvasId, onUploadedImages } = props;
+  const {
+    cordinats,
+    canvasId,
+    imageTitle,
+    onUploadedImages,
+    onDeleteImageDoc,
+  } = props;
 
   useEffect(() => {
     const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext("2d");
-    console.log(1);
+
     let selectedColor = "#000";
 
     const setCanvasBackground = () => {
@@ -63,10 +67,10 @@ const Pictures = (props) => {
   return (
     <>
       <div className="block">
-        <label className="content">title 1</label>
+        <label className="content">{imageTitle}</label>
         <canvas className="canvas" id={canvasId}></canvas>
-        <div className="button-container">
-          <button>delete</button>
+        <div className="button-container-canvas">
+          <button onClick={() => onDeleteImageDoc(canvasId)}>delete</button>
         </div>
       </div>
     </>
