@@ -18,6 +18,7 @@ import Pictures from "./Pictures/Pictures";
 import Popup from "../Popup/Popup";
 import Button from "../Button/Button";
 import { useNavigate } from "react-router";
+import Pagination from "./Pagination/Pagination";
 
 const Gallery = () => {
   const [cordinats, setCordinats] = useState([]);
@@ -25,6 +26,12 @@ const Gallery = () => {
   const [isUploadedImages, setIsUploadedImages] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [imageTitle, setImageTitle] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentImages, setCurrentImages] = useState(1);
+  const imagesPerPage = 2;
+
+  const indexOfLastImage = currentPage * imagesPerPage;
+  const indexOfFirstImage = indexOfLastImage - imagesPerPage;
 
   const userId = localStorage.getItem("userId");
 
@@ -81,14 +88,17 @@ const Gallery = () => {
             cordinats: JSON.parse(item.data().cordinats),
           };
         });
-        console.log(imagesCordinats);
 
         if (imagesCordinats.length === 0) {
           setIsUploadedImages(true);
         }
 
+        const currentImages = imagesCordinats.slice(indexOfFirstImage, indexOfLastImage);
+
         setCoutnUserImages(imagesCordinats.length);
         setCordinats(imagesCordinats);
+        setCurrentImages(currentImages);
+        console.log(currentImages);
       } catch (error) {
         console.log(error);
       }
@@ -97,14 +107,18 @@ const Gallery = () => {
     uploadImages();
   }, [userId]);
 
-  const pageNumbers = [1, 2, 3, 4, 5, 6, 7, 8];
+  const paginate = (pageNumber) => {
+    console.log(pageNumber);
+    setCurrentImages(cordinats.slice(indexOfFirstImage, indexOfLastImage));
+    setCurrentPage(pageNumber)
+  };
 
   return (
     <>
       <NavBar pathCanvas={"/canvas"} handlePopupAction={togglePopup}></NavBar>
       <div className="gallery-container">
         {countUserImages ? (
-          cordinats.map((imageData, index) => {
+          currentImages.map((imageData, index) => {
             return (
               <Pictures
                 key={index}
@@ -132,21 +146,12 @@ const Gallery = () => {
           </h1>
         )}
       </div>
-      <nav>
-        <ul className="pagination">
-          {pageNumbers.map((number) => (
-            <li key={number} className="page-item">
-              <a
-                onClick={() => paginate(number)}
-                href="#"
-                className="page-link"
-              >
-                {number}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <Pagination
+        imagesPerPage={imagesPerPage}
+        totalImages={countUserImages}
+        currentPage={currentPage}
+        paginate={paginate}
+      ></Pagination>
       {!isUploadedImages && (
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
