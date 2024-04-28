@@ -139,7 +139,7 @@ const Gallery = () => {
               ></Pictures>
             );
           })
-        ) : (
+        ) : isUploadedImages && (
           <h1 style={{ fontFamily: "cursive", color: "#FF69B4" }}>
             Draw a picture of your dreams ! 🎨🌈
             <br />
