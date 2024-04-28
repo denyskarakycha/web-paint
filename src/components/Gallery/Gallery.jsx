@@ -20,7 +20,7 @@ import Button from "../Button/Button";
 import { useNavigate } from "react-router";
 import Pagination from "./Pagination/Pagination";
 
-const Gallery = ({isAuthorized}) => {
+const Gallery = () => {
   const [cordinats, setCordinats] = useState([]);
   const [countUserImages, setCoutnUserImages] = useState(null);
   const [isUploadedImages, setIsUploadedImages] = useState(false);
@@ -81,7 +81,7 @@ const Gallery = ({isAuthorized}) => {
   };
 
   useEffect(() => {
-    if (!isAuthorized) {
+    if (localStorage.getItem('isAuthorized') !== 'true') {
       navigate('/register');
     }
 

@@ -18,7 +18,7 @@ import { useNavigate } from "react-router";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const Canvas = ({isAuthorized}) => {
+const Canvas = () => {
   const navigate = useNavigate();
   const [state, setState] = useState(false);
   const [imageIdEditState, setImageEditState] = useState(
@@ -26,7 +26,7 @@ const Canvas = ({isAuthorized}) => {
   );
 
   useEffect(() => {
-    if (!isAuthorized) {
+    if (localStorage.getItem('isAuthorized') !== 'true') {
       navigate('/register');
     }
 

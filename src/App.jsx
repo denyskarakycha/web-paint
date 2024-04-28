@@ -6,18 +6,18 @@ import Gallery from "./components/Gallery/Gallery";
 import { useState } from "react";
 
 const App = () => {
-  const [isAuthorizedState, setIsAuthorized] = useState(false);
-
   const handleAuthorizedUser = (boolean) => {
-    setIsAuthorized(boolean);
+    if (boolean) {
+      localStorage.setItem('isAuthorized', true);
+    }
   }
 
   return (
     <Routes>
         <Route exact path="/login" element={<Login/>}/>
         <Route exact path="/register" element={<Signin onAuthorized={handleAuthorizedUser}/>}/>
-        <Route exact path="/gallery" element={<Gallery isAuthorized={isAuthorizedState}/>}/>
-        <Route exact path="/canvas" element={<Canvas isAuthorized={isAuthorizedState}/>}/>
+        <Route exact path="/gallery" element={<Gallery />}/>
+        <Route exact path="/canvas" element={<Canvas />}/>
       </Routes>
   );
 };
