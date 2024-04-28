@@ -66,12 +66,15 @@ const Gallery = () => {
     try {
       const imagesCollectionRef = doc(db, "images", imageId);
       await deleteDoc(imagesCollectionRef);
-      window.location.reload();
       const usersDocRef = doc(db, "users", userId);
       const usersCredentials = await getDoc(usersDocRef);
+      console.log(usersCredentials.data());
       let userImagesDataId = usersCredentials.data().images;
+      console.log(imageId);
       userImagesDataId = userImagesDataId.filter((item) => item !== imageId);
+      console.log(userImagesDataId);
       await updateDoc(usersDocRef, { images: userImagesDataId });
+      window.location.reload();
     } catch (e) {
       console.log(e);
     }
