@@ -3,7 +3,6 @@ import Login from "./components/Auth/LogIn/Login";
 import Signin from "./components/Auth/SignIn/Signin";
 import Canvas from "./components/Canvas/Canvas";
 import Gallery from "./components/Gallery/Gallery";
-import { useState } from "react";
 
 const App = () => {
   const handleAuthorizedUser = (boolean) => {

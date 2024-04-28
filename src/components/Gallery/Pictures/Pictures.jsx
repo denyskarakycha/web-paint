@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import "../Gallery.css";
 import { useEffect } from "react";
-
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from "../../../common/enum";
 const Pictures = (props) => {
   const {
     cordinats,
@@ -36,12 +36,12 @@ const Pictures = (props) => {
 
           if ((!end.x && !end.y) || (!start.x && !start.y)) continue;
 
-          const scaledStartX = start.x * (canvas.width / 1250);
-          const scaledStartY = start.y * (canvas.height / 550);
-          const scaledEndX = end.x * (canvas.width / 1250);
-          const scaledEndY = end.y * (canvas.height / 550);
+          const scaledStartX = start.x * (canvas.width / CANVAS_WIDTH);
+          const scaledStartY = start.y * (canvas.height / CANVAS_HEIGHT);
+          const scaledEndX = end.x * (canvas.width / CANVAS_WIDTH);
+          const scaledEndY = end.y * (canvas.height / CANVAS_HEIGHT);
 
-          ctx.lineWidth = start.brushWidth * (canvas.width / 1250);
+          ctx.lineWidth = start.brushWidth * (canvas.width / CANVAS_WIDTH);
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
 
