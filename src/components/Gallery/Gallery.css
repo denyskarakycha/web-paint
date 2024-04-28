@@ -22,11 +22,14 @@
   margin: 0 auto;
   padding: 20px;
   display: grid;
-  grid-template-columns: repeat(2, 2fr);
   align-items: center;
   grid-column-gap: 100px;
   height: 93vh;
   justify-content: center;
+}
+
+.gallery-container.grid {
+  grid-template-columns: repeat(2, 2fr);
 }
 
 .block {

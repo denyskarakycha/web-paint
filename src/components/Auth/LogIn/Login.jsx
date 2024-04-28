@@ -5,6 +5,7 @@ import "./Login.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../../firebase/config";
 import { collection, addDoc, doc, setDoc } from "firebase/firestore"; 
+import { useNavigate } from "react-router";
 
 
 const Login = () => {
@@ -13,6 +14,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [copyPassword, setCopyPassword] = useState("");
   const [error, setError] = useState('');
+
+  const naigate = useNavigate();
 
   const register = async (event) => {
     event.preventDefault()
@@ -29,6 +32,7 @@ const Login = () => {
       setPassword('');
       setUsername('');
       setCopyPassword('');
+      naigate('/register');
     } catch (error) {
       console.log(error);
       setError('Something get wrong!');

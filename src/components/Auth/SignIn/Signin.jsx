@@ -8,7 +8,7 @@ import { auth } from '../../../firebase/config'
 
 
 
-const Signin = () => {
+const Signin = ({onAuthorized}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState('');
@@ -24,6 +24,7 @@ const Signin = () => {
       setError('');
       setEmail('');
       setPassword('');
+      onAuthorized(true);
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {
         setError("Invalid credential!");

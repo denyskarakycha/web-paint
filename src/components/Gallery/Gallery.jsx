@@ -20,7 +20,7 @@ import Button from "../Button/Button";
 import { useNavigate } from "react-router";
 import Pagination from "./Pagination/Pagination";
 
-const Gallery = () => {
+const Gallery = ({isAuthorized}) => {
   const [cordinats, setCordinats] = useState([]);
   const [countUserImages, setCoutnUserImages] = useState(null);
   const [isUploadedImages, setIsUploadedImages] = useState(false);
@@ -81,6 +81,10 @@ const Gallery = () => {
   };
 
   useEffect(() => {
+    if (!isAuthorized) {
+      navigate('/register');
+    }
+
     const uploadImages = async () => {
       try {
         const imagesCollectionRef = collection(db, "images");
@@ -124,7 +128,7 @@ const Gallery = () => {
   return (
     <>
       <NavBar pathCanvas={"/canvas"} handlePopupAction={togglePopup}></NavBar>
-      <div className="gallery-container">
+      <div className={`gallery-container ${currentImages?.length !== 1 ? 'grid' : ''}`}>
         {countUserImages ? (
           currentImages.map((imageData, index) => {
             return (

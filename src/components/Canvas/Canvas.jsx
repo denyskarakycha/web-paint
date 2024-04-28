@@ -18,14 +18,18 @@ import { useNavigate } from "react-router";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const Canvas = () => {
-  const naigate = useNavigate();
+const Canvas = ({isAuthorized}) => {
+  const navigate = useNavigate();
   const [state, setState] = useState(false);
   const [imageIdEditState, setImageEditState] = useState(
     localStorage.getItem("imageId")
   );
 
   useEffect(() => {
+    if (!isAuthorized) {
+      navigate('/register');
+    }
+
     const canvas = document.querySelector("canvas");
     const toolBtns = document.querySelectorAll(".tool");
     const sizeSlider = document.querySelector("#size-slider");
