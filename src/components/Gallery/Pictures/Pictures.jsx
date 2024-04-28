@@ -9,6 +9,7 @@ const Pictures = (props) => {
     imageTitle,
     onUploadedImages,
     onDeleteImageDoc,
+    onEditImage,
   } = props;
 
   useEffect(() => {
@@ -71,6 +72,7 @@ const Pictures = (props) => {
         <canvas className="canvas" id={canvasId}></canvas>
         <div className="button-container-canvas">
           <button onClick={() => onDeleteImageDoc(canvasId)}>delete</button>
+          <button onClick={() => onEditImage(canvasId)} style={{float: "right", marginLeft: '20px'}}>edit</button>
         </div>
       </div>
     </>

@@ -140,6 +140,10 @@
   background: #4a98f7;
   border: 1px solid #4a98f7;
 }
+.buttons .edit-img {
+  background: #4a98f7;
+  border: 1px solid #4a98f7;
+}
 .drawing-board {
   flex: 1;
   overflow: hidden;

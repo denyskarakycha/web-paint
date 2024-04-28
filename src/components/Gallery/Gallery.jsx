@@ -27,7 +27,7 @@ const Gallery = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [imageTitle, setImageTitle] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentImages, setCurrentImages] = useState(1);
+  const [currentImages, setCurrentImages] = useState(null);
   const imagesPerPage = 2;
 
   const indexOfLastImage = currentPage * imagesPerPage;
@@ -49,6 +49,12 @@ const Gallery = () => {
   const onSaveImage = (event) => {
     event.preventDefault();
     localStorage.setItem("imageTitle", imageTitle);
+    navigate("/canvas");
+  };
+
+  const hendleEditImage = (imageId) => {
+    console.log(imageId);
+    localStorage.setItem("imageId", imageId);
     navigate("/canvas");
   };
 
@@ -108,7 +114,6 @@ const Gallery = () => {
   }, [userId]);
 
   const paginate = (pageNumber) => {
-    console.log(pageNumber);
     setCurrentImages(cordinats.slice(indexOfFirstImage, indexOfLastImage));
     setCurrentPage(pageNumber)
   };
@@ -127,6 +132,7 @@ const Gallery = () => {
                 imageTitle={imageData.title}
                 onUploadedImages={handleUploadedImages}
                 onDeleteImageDoc={handleDeleteImage}
+                onEditImage={hendleEditImage}
               ></Pictures>
             );
           })
