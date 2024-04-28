@@ -168,7 +168,7 @@ const Canvas = ({isAuthorized}) => {
         userImagesDataId.push(imageDoc.id);
         await updateDoc(usersDocRef, { images: userImagesDataId });
         setState(false);
-        naigate("/gallery");
+        navigate("/gallery");
       } catch (error) {
         console.log(error);
       }
@@ -179,7 +179,7 @@ const Canvas = ({isAuthorized}) => {
         const imageDocRef = doc(db, "images", imageIdEditState);
         await updateDoc(imageDocRef, { cordinats: JSON.stringify(cordinats) });
         setImageEditState(null);
-        naigate("/gallery");
+        navigate("/gallery");
       } catch (error) {
         console.log(error);
       }
